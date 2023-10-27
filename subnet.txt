@@ -1,0 +1,51 @@
+#include <iostream>
+#include <sstream>
+#include <bitset>
+using namespace std;
+
+// Function to calculate subnet details
+void calculateSubnet(const string& ipAddress, int prefixLength) {
+    // Convert the IP address to binary representation
+    istringstream is(ipAddress);
+    int a, b, c, d;
+    char dot;
+    is >> a >> dot >> b >> dot >> c >> dot >> d;
+
+    bitset<32> ipBinary;
+    ipBinary = (a << 24) | (b << 16) | (c << 8) | d;
+
+    // Calculate the subnet mask
+    bitset<32> subnetMask;
+    subnetMask = (0xFFFFFFFF << (32 - prefixLength));
+
+    // Calculate the network address
+    bitset<32> networkAddress;
+    networkAddress = ipBinary & subnetMask;
+
+    // Calculate the broadcast address
+    bitset<32> broadcastAddress;
+    broadcastAddress = networkAddress | ~subnetMask;
+
+    // Display the results
+    cout << "IP Address: " << ipAddress << endl;
+    cout << "Subnet Mask: " << subnetMask << " (" << subnetMask.to_ulong() << ")" << endl;
+    cout << "Network Address: " << networkAddress << " (" << networkAddress.to_ulong() << ")" << endl;
+    cout << "Broadcast Address: " << broadcastAddress << " (" << broadcastAddress.to_ulong() << ")" << endl;
+}
+
+int main() {
+    string ipAddress;
+    int prefixLength;
+
+    // Input IP address and prefix length
+    cout << "Enter an IP address (e.g., 192.168.1.10): ";
+    cin >> ipAddress;
+
+    cout << "Enter the prefix length (e.g., 24 for /24): ";
+    cin >> prefixLength;
+
+    // Calculate and display subnet details
+    calculateSubnet(ipAddress, prefixLength);
+
+    return 0;
+}
